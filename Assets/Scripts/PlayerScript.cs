@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -9,31 +10,28 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] float speed = 5f;
     [SerializeField] private float mouseSensivity;
     [SerializeField] private GameObject cameraHolder;
-    [SerializeField]private float stamina = 100;
+    [SerializeField] private float maxStamina = 100;
+    [SerializeField] private float currentStamina;
     [SerializeField] private bool canRun = true;
+    [SerializeField] private Image staminaImage;
     private float verticalMoveRotation;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        currentStamina = maxStamina;
     }
     private void Update()
     {
-       
         LookCamera();
+        staminaChange();
+       
     }
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && canRun)
-        {
-            speed = 10f;
-            StartCoroutine("minusStamina");
-        }
-        else
-        {
-            speed = 5f;
-        }
+       
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
 
@@ -47,16 +45,24 @@ public class PlayerScript : MonoBehaviour
         verticalMoveRotation = Mathf.Clamp(verticalMoveRotation, -75f, 75f);
         cameraHolder.transform.localEulerAngles = Vector3.left * verticalMoveRotation;
     }
-    IEnumerator minusStamina()
+    private void staminaChange()
     {
-        if(stamina > 0)
+        if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0)
         {
-            stamina--;
-            yield return new WaitForSeconds(0.2f);
+            speed = 10f;
+            currentStamina -= 0.15f;
         }
-        else
+        if (currentStamina <= 0)
         {
-            canRun = false;
+            currentStamina += 0f;
+            speed = 5f;
         }
+        if(currentStamina < 100 && !Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = 5f;
+            currentStamina += 0.05f;
+        }
+        
+        staminaImage.fillAmount = currentStamina / maxStamina;
     }
 }
