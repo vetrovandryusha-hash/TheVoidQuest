@@ -57,11 +57,12 @@ public class Enemy_Script : MonoBehaviour
         {
             agent.destination = patrolPoints[indexPoint].position;
             checkPatrolTarget();
+            PatrolEnemyAnimator.Instance.WalkingAnimation();
         }
     }
     private void stalkerBehaviour()
     {
         agent.destination = playerPosition.position;
-
+        PatrolEnemyAnimator.Instance.WalkingAnimation();
     }
 }
