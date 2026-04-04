@@ -41,6 +41,7 @@ public class Enemy_Script : MonoBehaviour
         Vector3 targetPosition = patrolPoints[indexPoint].position;
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
+            StartCoroutine("walkingDelay");
             if (indexPoint < patrolPoints.Length - 1)
             {
                 indexPoint++;
@@ -64,5 +65,11 @@ public class Enemy_Script : MonoBehaviour
     {
         agent.destination = playerPosition.position;
         PatrolEnemyAnimator.Instance.WalkingAnimation();
+    }
+    IEnumerator walkingDelay()
+    {
+        enemySpeed = 0f;
+        yield return new WaitForSecondsRealtime(2f);
+        enemySpeed = 5f;
     }
 }
