@@ -6,7 +6,7 @@ public class PatrolEnemyAnimator : MonoBehaviour
 {
     // Start is called before the first frame update
     public static PatrolEnemyAnimator Instance;
-    private Animator enemyAnimator;
+    public Animator enemyAnimator;
     private void Awake()
     {
         Instance = this;
@@ -21,12 +21,20 @@ public class PatrolEnemyAnimator : MonoBehaviour
     {
         
     }
-    public void WalkingAnimation()
+    public void walkingAnimation()
     {
         enemyAnimator.SetBool("isWalking", true);
     }
-    public void StopWalking()
+    public void stopWalking()
     {
         enemyAnimator.SetBool("isWalking", false);
+    }
+    public void runningAnimation()
+    {
+        enemyAnimator.SetBool("isRun", true);
+    }
+    public void stopRunning()
+    {
+        enemyAnimator.SetBool("isRun", false);
     }
 }
