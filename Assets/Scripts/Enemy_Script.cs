@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -16,17 +16,22 @@ public class Enemy_Script : MonoBehaviour
     [SerializeField] private bool isRotating = false;
     [SerializeField] private float enemyDelay = 2f;
     [SerializeField] private bool isHit = false;
+    public bool isAttacking = false;
+    [SerializeField] private Animator enemyAnimator;
     private float timeDelay = 2f;
     void Start()
     { 
         agent = GetComponent<NavMeshAgent>();
         agent.speed = enemySpeed;
+        //enemyAnimator = GetComponent<Animator>();
+        agent.updateRotation = false;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-       
+        isAttacking = enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("Hit");
         playerPosition = GameObject.Find("Player").transform;
         Vector3 playerDistance = playerPosition.position;
         if (playerPosition != null && Vector3.Distance(transform.position, playerDistance) <= 10f && isDelay != true)
@@ -77,17 +82,25 @@ public class Enemy_Script : MonoBehaviour
     private void stalkerBehaviour()
     {
         Vector3 playerDistance = playerPosition.position;
-        AnimatorStateInfo stateInfo = PatrolEnemyAnimator.Instance.enemyAnimator.GetCurrentAnimatorStateInfo(0);
+        
         enemySpeed = 7f;
         PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("isWalking", false);
         PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("isRun", true);
         PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("canHit", false);
+
+        //
+        RotateToPlayer();
+
         if(Vector3.Distance(transform.position, playerDistance) <= 2f)
         {
+            agent.destination = transform.position;
             PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("isWalking", false);
             PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("isRun", false);
             PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("canHit", true);
-            if(stateInfo.IsName("Base Layer.Hit") && stateInfo.normalizedTime >= 1.0f && Vector3.Distance(transform.position, playerDistance) <= 2f)
+            //
+            AnimatorStateInfo stateInfo = PatrolEnemyAnimator.Instance.enemyAnimator.GetCurrentAnimatorStateInfo(0);
+
+            if (stateInfo.IsName("Base Layer.Hit") && stateInfo.normalizedTime >= 1.0f && Vector3.Distance(transform.position, playerDistance) <= 2f)
             {
                 PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("isRun", true);
                 PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("canHit", false);
@@ -95,6 +108,22 @@ public class Enemy_Script : MonoBehaviour
            
         }
     }
+    private void RotateToPlayer()
+    {
+        Vector3 direction = playerPosition.position - transform.position;
+        direction.y = 0; // чтобы не заваливался вверх/вниз
+
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                Time.deltaTime * 7f // скорость поворота
+            );
+        }
+    }
+
     IEnumerator walkingDelay()
     {
         enemySpeed = 0f;
@@ -104,4 +133,5 @@ public class Enemy_Script : MonoBehaviour
         PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("isWalking", true);
         isDelay = false;
     }
+
 }

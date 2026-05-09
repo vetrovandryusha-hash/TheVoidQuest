@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - ScreamerTrigger
+  - HandPush
   layers:
   - Default
   - TransparentFX
