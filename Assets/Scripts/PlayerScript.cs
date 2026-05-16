@@ -15,11 +15,13 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private float currentStamina;
     [SerializeField] private float currentHealth;
     [SerializeField] private bool canRun = true;
+    [SerializeField] private bool freezeActive = false;
     [SerializeField] private Image staminaImage;
     [SerializeField] private Image healthImage;
     [SerializeField] private Image freezeImage;
     [SerializeField] private GameObject bloodObject;
     private float verticalMoveRotation;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -54,7 +56,7 @@ public class PlayerScript : MonoBehaviour
     }
     private void staminaChange()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0)
+        if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && freezeActive != true)
         {
             speed = 10f;
             currentStamina -= 0.15f;
@@ -64,12 +66,15 @@ public class PlayerScript : MonoBehaviour
             currentStamina += 0f;
             speed = 5f;
         }
-        if(currentStamina < 100 && !Input.GetKey(KeyCode.LeftShift))
+        if(currentStamina < 100 && !Input.GetKey(KeyCode.LeftShift) && freezeActive != true)
         {
             speed = 5f;
             currentStamina += 0.05f;
         }
-        
+        if (freezeActive == true) 
+        {
+            speed = 3f;
+        }
         staminaImage.fillAmount = currentStamina / maxStamina;
     }
     private void OnTriggerEnter(Collider other)
@@ -83,7 +88,9 @@ public class PlayerScript : MonoBehaviour
     IEnumerator freezeTimer()
     {
         freezeImage.gameObject.SetActive(true);
+        freezeActive = true;
         yield return new WaitForSeconds(7f);
+        freezeActive = false;
         freezeImage.gameObject.SetActive(false);
     }
     IEnumerator bloodTimer()
