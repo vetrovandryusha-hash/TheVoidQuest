@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ScreamerTrigger
   - HandPush
+  - Battery
   layers:
   - Default
   - TransparentFX

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class PlayerScript : MonoBehaviour
 {
     // Start is called before the first frame update
     private Rigidbody rb;
+    private float verticalMoveRotation;
     [SerializeField] float speed = 5f;
     [SerializeField] private float mouseSensivity;
     [SerializeField] private GameObject cameraHolder;
@@ -20,8 +22,25 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Image healthImage;
     [SerializeField] private Image freezeImage;
     [SerializeField] private GameObject bloodObject;
-    private float verticalMoveRotation;
-    
+    [SerializeField] private GameObject cameraP;
+    [SerializeField] public bool drawOutline = false;
+    public GameObject targetedObject;
+    public GameObject objOther;
+    public GameObject obj;
+    Vector3 objPos;
+    [Header("Lamp")]
+    [SerializeField] private GameObject lamp;
+    [SerializeField] private GameObject battery;
+    [SerializeField] private GameObject lampLight;
+    [SerializeField] private Image batteryImage;
+    [SerializeField] private int countLamp = 0;
+    [SerializeField] private bool isLampActive = false;
+    [SerializeField] private bool canLampLight = true;
+    [SerializeField] public float currentBattery;
+    [SerializeField] public float maxBattery = 100f;
+    [SerializeField] public int countBattery;
+    [SerializeField] private Text countBatteryText;
+    [SerializeField] private GameObject batteryItemFrame;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -29,13 +48,15 @@ public class PlayerScript : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         currentStamina = maxStamina;
         currentHealth = maxHealth;
+        currentBattery = maxBattery;
     }
     private void Update()
     {
         LookCamera();
         staminaChange();
         healthImage.fillAmount = currentHealth / maxHealth;
-
+        lampActive();
+        mouseRaycast();
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -77,9 +98,71 @@ public class PlayerScript : MonoBehaviour
         }
         staminaImage.fillAmount = currentStamina / maxStamina;
     }
+    
+    private void lampActive()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1) && countLamp % 2 == 0)
+        {
+            lamp.SetActive(true);
+            battery.SetActive(true);
+            batteryItemFrame.SetActive(true);
+            isLampActive = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Alpha1))
+        {
+            countLamp++;
+        }
+       
+        if (Input.GetKeyDown(KeyCode.Alpha1) && countLamp % 2 > 0)
+        {
+            lamp.SetActive(false);
+            battery.SetActive(false);
+            batteryItemFrame.SetActive(false);
+            isLampActive = false;
+        }
+        if (isLampActive)
+        {
+            currentBattery -= 0.02f;
+        }
+        if(currentBattery <= 0)
+        {
+            lampLight.SetActive(false);
+        }
+        else if(currentBattery > 0)
+        {
+            lampLight.SetActive(true);
+        }
+        if(countBattery > 0 && currentBattery <= 0)
+        {
+            currentBattery = 100f;
+            countBattery--;
+        }
+        batteryImage.fillAmount = currentBattery / maxBattery;
+        countBatteryText.text = countBattery.ToString();
+    }
+    private void mouseRaycast()
+    {
+        Ray ray = cameraP.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit))
+        {
+            obj = hit.transform.gameObject;
+            objOther = hit.transform.gameObject;
+            objPos = hit.transform.position;
+            if (obj.CompareTag("Battery"))
+            {
+                targetedObject = obj;
+            }
+            else 
+            {
+                targetedObject = objOther;
+            }
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("HandPush")) {
+        if (other.gameObject.CompareTag("HandPush"))
+        {
             currentHealth -= 40f;
             StartCoroutine("freezeTimer");
             StartCoroutine("bloodTimer");
@@ -99,4 +182,5 @@ public class PlayerScript : MonoBehaviour
         yield return new WaitForSeconds(3f);
         bloodObject.SetActive(false);
     }
+    
 }
