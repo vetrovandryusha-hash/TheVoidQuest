@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8989216bccea3764d8eb632f9e304583, type: 3}
+  m_Name: CrossDarkRoom
+  m_EditorClassIdentifier: 
+  roomID: 7
+  roomType: 1
+  roomPrefab: {fileID: 7362524664236585965, guid: 0948c8f8adfb98c49a0371f4b1ba7b54, type: 3}
+  maxDarkTime: 10
+  darkDamagePerSecond: 5
+  hasNorthDoor: 1
+  hasSouthDoor: 1
+  hasEastDoor: 1
+  hasWestDoor: 1
+  spawnWeight: 0.3
