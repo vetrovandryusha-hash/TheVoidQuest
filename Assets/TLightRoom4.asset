@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8989216bccea3764d8eb632f9e304583, type: 3}
+  m_Name: TLightRoom4
+  m_EditorClassIdentifier: 
+  roomID: 6
+  roomType: 0
+  roomPrefab: {fileID: 7008894005054896350, guid: b146f034c7dd04c4db81283152df3f55, type: 3}
+  maxDarkTime: 10
+  darkDamagePerSecond: 5
+  hasNorthDoor: 1
+  hasSouthDoor: 1
+  hasEastDoor: 1
+  hasWestDoor: 0
+  spawnWeight: 0.7
