@@ -18,7 +18,7 @@ MonoBehaviour:
   maxDarkTime: 10
   darkDamagePerSecond: 5
   hasNorthDoor: 1
-  hasSouthDoor: 0
-  hasEastDoor: 1
+  hasSouthDoor: 1
+  hasEastDoor: 0
   hasWestDoor: 1
   spawnWeight: 0.7

@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomID: 1
   roomType: 3
-  roomPrefab: {fileID: 2164224968449910225, guid: abbb563dd6117ef4f8f73c11459c449d, type: 3}
+  roomPrefab: {fileID: 2164224968449910225, guid: 5e988adaba5eb504ab2802267df01f12, type: 3}
   maxDarkTime: 10
   darkDamagePerSecond: 5
   hasNorthDoor: 0
-  hasSouthDoor: 1
+  hasSouthDoor: 0
   hasEastDoor: 0
-  hasWestDoor: 0
+  hasWestDoor: 1
   spawnWeight: 0.5

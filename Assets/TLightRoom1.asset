@@ -17,8 +17,8 @@ MonoBehaviour:
   roomPrefab: {fileID: 2475603494091804147, guid: 820b68ba5c60f2942b6975ed15db937b, type: 3}
   maxDarkTime: 10
   darkDamagePerSecond: 5
-  hasNorthDoor: 0
+  hasNorthDoor: 1
   hasSouthDoor: 1
   hasEastDoor: 1
-  hasWestDoor: 1
+  hasWestDoor: 0
   spawnWeight: 0.7
