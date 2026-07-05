@@ -18,6 +18,8 @@ public class Enemy_Script : MonoBehaviour
     [SerializeField] private bool isHit = false;
     public bool isAttacking = false;
     [SerializeField] private Animator enemyAnimator;
+    [SerializeField] private bool isLampTriggerActive;
+    [SerializeField] GameObject Lamp;
     private float timeDelay = 2f;
     void Start()
     { 
@@ -25,29 +27,60 @@ public class Enemy_Script : MonoBehaviour
         agent.speed = enemySpeed;
         //enemyAnimator = GetComponent<Animator>();
         agent.updateRotation = false;
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         isAttacking = enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("Hit");
         playerPosition = GameObject.Find("Player").transform;
         Vector3 playerDistance = playerPosition.position;
-        if (playerPosition != null && Vector3.Distance(transform.position, playerDistance) <= 10f && isDelay != true)
+        if (Vector3.Distance(transform.position, playerDistance) <= 9f && Lamp.activeInHierarchy == true)
         {
-            agent.destination = playerPosition.position;
-            stalkerBehaviour();
+            isLampTriggerActive = true;
         }
-        else if (isDelay)
+        if(Vector3.Distance(transform.position, playerDistance) >= 9f && Lamp.activeInHierarchy == false)
         {
-            StartCoroutine("walkingDelay");
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 180, 0), -180f * Time.deltaTime);
+            isLampTriggerActive = false;
         }
-        
+        if (!isLampTriggerActive)
+        {
+            if (playerPosition != null && Vector3.Distance(transform.position, playerDistance) <= 10f && isDelay != true)
+            {
+                agent.destination = playerPosition.position;
+                stalkerBehaviour();
+            }
+            else if (isDelay)
+            {
+                StartCoroutine("walkingDelay");
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 180, 0), -180f * Time.deltaTime);
+            }
+
+            else
+            {
+                patrolBehaviour();
+            }
+        }
         else
         {
-            patrolBehaviour();
+            
+            if (playerPosition != null && Vector3.Distance(transform.position, playerDistance) <= 10f && isDelay != true)
+            {
+                agent.destination = patrolPoints[indexPoint].position;
+                stalkerBehaviour();
+            }
+            else if (isDelay)
+            {
+                StartCoroutine("walkingDelay");
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 180, 0), -180f * Time.deltaTime);
+            }
+
+            else
+            {
+                patrolBehaviour();
+            }
         }
 
     }
@@ -133,5 +166,26 @@ public class Enemy_Script : MonoBehaviour
         PatrolEnemyAnimator.Instance.enemyAnimator.SetBool("isWalking", true);
         isDelay = false;
     }
-
+    /*private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("TriggerLight") && other.gameObject.layer == LayerMask.NameToLayer("LightTrigger") && Lamp.activeInHierarchy == true)
+        {
+            isLampTriggerActive = true;
+        }
+        
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("TriggerLight") && other.gameObject.layer == LayerMask.NameToLayer("LightTrigger") && Lamp.activeInHierarchy == false)
+        {
+            isLampTriggerActive = false;
+        }
+        
+    }
+    */
+    
+    public void setLampStatus(bool status)
+    {
+        isLampTriggerActive = status;
+    }
 }
